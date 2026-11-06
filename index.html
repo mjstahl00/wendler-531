@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF6F3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="5/3/1">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>5/3/1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--maroon:#7D1531;--bg:#FAF6F3;--hi:#F9E6E8;--line:#EADFD8;--field:#E2D6CF;--ink:#1E1A19;--mute:#6B625E;--dis:#F0EAE5;--disink:#9A918B}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-text-size-adjust:100%}
+a{text-decoration:none;color:inherit}
+input,select,button,textarea{font-family:inherit}
+#app{max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh}
+.screen{min-height:100vh;min-height:100dvh;padding:calc(16px + env(safe-area-inset-top)) 20px calc(60px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;position:relative}
+.nums{font-variant-numeric:tabular-nums}
+.bar{display:flex;align-items:center;min-height:48px;padding:0 14px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px #1E1A1914}
+.homelink{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:600;color:var(--maroon)}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld>label,.lbl{font-size:12px;font-weight:600;color:var(--mute);white-space:nowrap}
+.fld.off>label,.lbl.off{color:var(--disink)}
+select,input[type=text],input[type=number],input[type=email],input[type=password]{height:44px;padding:0 10px;border:1px solid var(--field);border-radius:10px;background:#fff;font-size:16px;color:var(--ink);width:100%;min-width:0}
+select:disabled,input:disabled{background:var(--dis);color:var(--disink);border-color:#E8DFD8}
+.hint{font-size:12px;color:var(--mute)}
+.locked{display:flex;align-items:center;height:44px;padding:0 12px;border-radius:10px;background:var(--dis);font-size:16px;color:var(--mute);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.row3{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) minmax(0,1.1fr);gap:8px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:end}
+#orm{height:48px;padding:0 12px}
+.calcbox{display:flex;align-items:center;height:48px;padding:0 12px;border-radius:10px;background:#F3E4E6;font-size:18px;font-weight:700;color:var(--maroon)}
+.calcbox.none{background:var(--dis);color:var(--disink)}
+.table{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 3px #1E1A1914}
+.tr{display:grid;grid-template-columns:44px 52px 68px 56px minmax(0,1fr);justify-items:center;align-items:center;gap:4px;height:50px;padding:0 12px;border-bottom:1px solid var(--line);font-size:15px}
+.tr:last-child{border-bottom:0}
+.tr.head{height:40px;background:var(--maroon);color:#fff;font-size:13px;font-weight:600;border-bottom:0}
+.tr.jk{background:#F4EEEC}
+.tr b{font-weight:600}
+.tr input{height:38px;padding:0;text-align:center;border-radius:10px}
+.tr.next input{border:2px solid var(--maroon)}
+.tgt{display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.tgt small{font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--maroon)}
+.info{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.msg{font-size:13px;font-weight:600;color:var(--maroon);min-height:0}
+.msg.ok{color:#2D6A3E}
+.btns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:8px;margin-top:auto}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;height:52px;border:1px solid var(--field);border-radius:12px;background:#fff;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer}
+.btn.primary{border:0;background:var(--maroon);color:#fff;font-size:16px}
+.btn:disabled{opacity:.55}
+.sheet{position:fixed;inset:0;background:#1E1A1966;display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet>div{width:100%;max-width:430px;background:#fff;border-radius:16px 16px 0 0;padding:16px 20px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+textarea{width:100%;height:110px;padding:10px 12px;border:1px solid var(--field);border-radius:10px;font-size:16px;resize:none}
+h1{margin:0;font-size:32px;font-weight:700}
+h1.s{font-size:28px;margin:4px 0 0}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.wm{font-size:26px;font-weight:700;letter-spacing:.04em;color:var(--maroon)}
+.avatar{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:22px;border:0;background:#F3DDE0;color:var(--maroon);font-size:17px;font-weight:600;cursor:pointer}
+.menu{position:absolute;top:64px;right:20px;width:200px;padding:6px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 16px #1E1A1926;z-index:5}
+.menu a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;border-radius:8px;font-size:15px;font-weight:600}
+.kick{font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--maroon)}
+.lifts{display:flex;flex-direction:column;gap:8px}
+.lift{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px #1E1A1914}
+.lift.last{background:var(--hi);border-color:#EBCFD3;border-left:4px solid var(--maroon)}
+.lift .n{font-size:17px;font-weight:600}
+.lift .s{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lift .go{flex-shrink:0;padding:9px 12px;background:var(--maroon);color:#fff;border-radius:8px;font-size:14px;font-weight:600}
+.more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:88px;background:#fff;border:1px solid var(--line);border-radius:12px;font-size:14px;font-weight:600;opacity:.5}
+.foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--mute)}
+.link{color:var(--maroon);font-weight:600;background:none;border:0;font-size:inherit;cursor:pointer;padding:10px 0}
+.center{align-self:center}
+.banner{padding:10px 12px;border-radius:10px;background:#F3E4E6;color:var(--maroon);font-size:13px;font-weight:600}
+.signin{justify-content:center;gap:14px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.spinner{margin:auto;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<div id="app"><div class="screen"><div class="spinner">Loading…</div></div></div>
+<script src="supabase.js"></script>
+<script>
+/* ========= connection (publishable key is safe in the browser; row security protects the data) ========= */
+const SUPABASE_URL = 'https://ewvtlixlsxqkujzxjfuh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_8WWfArHOR9EQxJDhRhWNSA_-LsmrzhA';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const LIFTS = ['Bench', 'Deadlift', 'Shoulder Press', 'Squat'];
+const JOKER_PROGRAM = '5/3/1 with Jokers';
+const FORMULAS = ['Epley', 'Brzycki', 'Landers', 'Lombardi'];
+
+/* ========= pure logic (also used by the tests) ========= */
+const Logic = {
+  mround(x, m) { return Math.round(x / m) * m; },
+  fmt(w) { return String(+Number(w).toFixed(2)); },
+  est1RM(formula, w, r) {
+    w = Number(w); r = Number(r);
+    if (!(w > 0) || !(r >= 1)) return null;
+    let v;
+    switch (formula) {
+      case 'Epley': v = w * (1 + r / 30); break;
+      case 'Landers': v = w / (1.013 - 0.0267123 * r); break;
+      case 'Lombardi': v = w * Math.pow(r, 0.10); break;
+      default: v = w / (1.0278 - 0.0278 * r); // Brzycki
+    }
+    if (!isFinite(v) || v <= 0) return null;
+    return Math.round(v);
+  },
+  isDeload(sch) { return !sch || sch.jk_sets == null; },
+  // target reps for sets 1-3. Week 3 is the 5/3/1 week; every other week is the same number three times.
+  targets(week, sch) { return Number(week) === 3 ? [5, 3, sch.reps] : [sch.reps, sch.reps, sch.reps]; },
+  workingWeights(orm, sch, tm, rnd) {
+    return [sch.pct_set1, sch.pct_set2, sch.pct_set3].map(p => Logic.mround(tm * orm * p, rnd));
+  },
+  // jokers only exist once earned: Set 3 reps >= jk_sets for Joker 1, then previous joker reps >= reps for the next
+  jokerPlan(sch, set3Weight, js, reps, rnd, jokersOn) {
+    const out = [];
+    if (!jokersOn || Logic.isDeload(sch) || !(set3Weight > 0)) return out;
+    const r3 = parseInt(reps.w3, 10);
+    if (!(r3 >= sch.jk_sets)) return out;
+    let prev = set3Weight;
+    for (let n = 1; n < 40; n++) {
+      const w = Logic.mround(prev * (1 + js), rnd);
+      out.push({ n, weight: w });
+      const v = parseInt(reps['j' + n], 10);
+      if (!(v >= sch.reps)) break;
+      prev = w;
+    }
+    return out;
+  },
+  nextWeek(last) { return !last ? 1 : (last.week >= 4 ? 1 : last.week + 1); }
+};
+
+/* ========= app state ========= */
+const S = {
+  session: null, scheme: {}, settings: null, last: {}, loaded: false, loadError: null,
+  menuOpen: false, calc: null, busy: false
+};
+const DEFAULTS = { one_rm_formula: 'Brzycki', training_max_pct: 0.9, weight_rounding: 5, default_js_percent: 0.05, display_name: null, program: JOKER_PROGRAM };
+
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const app = () => document.getElementById('app');
+const svgHome = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7D1531" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>';
+const svgPen = c => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/></svg>`;
+const svgSet = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7D1531" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>';
+const svgLog = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7D1531" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>';
+const svgProg = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7D1531" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
+const svgBars = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7D1531" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
+
+function userName() {
+  const d = S.settings && S.settings.display_name;
+  if (d && d.trim()) return d.trim();
+  const e = S.session && S.session.user && S.session.user.email || '';
+  return e.split('@')[0] || 'there';
+}
+const settings = () => Object.assign({}, DEFAULTS, S.settings || {});
+const jokersOn = () => settings().program === JOKER_PROGRAM;
+
+/* ========= data ========= */
+async function loadCore() {
+  S.loadError = null;
+  const uid = S.session.user.id;
+  const [sch, ud] = await Promise.all([
+    sb.from('week_scheme').select('*').order('week'),
+    sb.from('user_details').select('*').eq('user_id', uid).limit(1)
+  ]);
+  if (sch.error) throw sch.error;
+  if (ud.error) throw ud.error;
+  S.scheme = {};
+  (sch.data || []).forEach(r => { S.scheme[r.week] = r; });
+  S.settings = (ud.data && ud.data[0]) || null;
+  S.loaded = true;
+}
+
+async function loadLast() {
+  const res = await Promise.all(LIFTS.map(l =>
+    sb.from('workout_log').select('id,lift,week,workout_date,original_1rm').eq('lift', l)
+      .order('workout_date', { ascending: false }).limit(1)));
+  const rows = [];
+  res.forEach(r => { if (r.error) throw r.error; if (r.data && r.data[0]) rows.push(r.data[0]); });
+  const last = {};
+  rows.forEach(r => { last[r.lift] = Object.assign({}, r, { set3: null }); });
+  if (rows.length) {
+    const s = await sb.from('set_log').select('workout_id,weight,reps').in('workout_id', rows.map(r => r.id))
+      .eq('set_type', 'Working').eq('set_number', 3);
+    if (s.error) throw s.error;
+    (s.data || []).forEach(x => {
+      const l = rows.find(r => r.id === x.workout_id);
+      if (l) last[l.lift].set3 = { weight: x.weight, reps: x.reps };
+    });
+  }
+  S.last = last;
+}
+
+/* ========= router ========= */
+function parseRoute() {
+  const h = location.hash.replace(/^#/, '') || '/';
+  const [path, q] = h.split('?');
+  return { path, params: new URLSearchParams(q || '') };
+}
+
+async function route() {
+  const r = parseRoute();
+  if (!S.session) return renderSignIn();
+  if (!S.loaded) {
+    app().innerHTML = '<div class="screen"><div class="spinner">Loading…</div></div>';
+    try { await loadCore(); } catch (e) { return renderError(e); }
+  }
+  if (r.path === '/settings') return renderSettings();
+  if (r.path === '/calc') return enterCalc(r.params);
+  return renderHome();
+}
+window.addEventListener('hashchange', () => { S.menuOpen = false; route(); });
+
+function renderError(e) {
+  console.error(e);
+  app().innerHTML = `<div class="screen"><div class="top"><div class="wm">5/3/1</div></div>
+    <div class="banner">Couldn't load your data. Check your connection and try again.<br><span style="font-weight:400">${esc(e && e.message || e)}</span></div>
+    <button class="btn primary" data-act="retry">Try again</button>
+    <button class="link center" data-act="signout">Sign out</button></div>`;
+}
+
+/* ========= sign in ========= */
+function renderSignIn(msg) {
+  app().innerHTML = `<div class="screen signin">
+    <div class="wm" style="align-self:flex-start">5/3/1</div>
+    <h1 class="s" style="margin:0">Sign in</h1>
+    <form id="siform" style="display:flex;flex-direction:column;gap:12px" novalidate>
+      <div class="fld"><label for="em">Email</label><input id="em" type="email" autocomplete="username" inputmode="email" autocapitalize="off"></div>
+      <div class="fld"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password"></div>
+      <div class="msg" id="simsg">${esc(msg || '')}</div>
+      <button class="btn primary" type="submit" id="sibtn">Sign in</button>
+    </form></div>`;
+}
+async function doSignIn() {
+  const email = $('#em').value.trim(), password = $('#pw').value;
+  const msg = $('#simsg'), btn = $('#sibtn');
+  if (!email || !password) { msg.textContent = 'Enter your email and password.'; return; }
+  btn.disabled = true; msg.textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    btn.disabled = false;
+    msg.textContent = /invalid/i.test(error.message) ? 'That email or password didn’t work.' : error.message;
+    return;
+  }
+  S.session = data.session; S.loaded = false;
+  location.hash = '#/';
+  route();
+}
+async function doSignOut() {
+  await sb.auth.signOut();
+  S.session = null; S.loaded = false; S.settings = null; S.last = {}; S.scheme = {}; S.calc = null;
+  location.hash = '#/';
+  renderSignIn();
+}
+
+/* ========= home ========= */
+function lastLine(l) {
+  if (!l) return 'Not started yet';
+  const d = new Date(l.workout_date);
+  const ds = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  let t = `Last: ${ds} · Wk ${l.week}`;
+  if (l.set3) t += ` · ${Logic.fmt(l.set3.weight)}×${l.set3.reps}`;
+  return t;
+}
+function renderHome(skipFetch) {
+  const name = userName();
+  let newest = null;
+  LIFTS.forEach(l => { const x = S.last[l]; if (x && (!newest || new Date(x.workout_date) > new Date(S.last[newest].workout_date))) newest = l; });
+  const rows = LIFTS.map(l => {
+    const x = S.last[l], wk = Logic.nextWeek(x);
+    return `<a class="lift ${l === newest ? 'last' : ''}" href="#/calc?lift=${encodeURIComponent(l)}&week=${wk}">
+      <div style="min-width:0"><div class="n">${esc(l)}</div><div class="s">${esc(lastLine(x))}</div></div>
+      <span class="go">Week ${wk} →</span></a>`;
+  }).join('');
+  app().innerHTML = `<div class="screen">
+    <div class="top"><div class="wm">5/3/1</div>
+      <button class="avatar" data-act="menu" aria-label="Account menu">${esc(name.charAt(0).toUpperCase())}</button></div>
+    ${S.menuOpen ? `<div class="menu"><a href="#/settings">${svgSet} My Settings</a></div>` : ''}
+    <div style="margin-top:4px;display:flex;flex-direction:column;gap:6px"><h1>Hi, ${esc(name)}</h1>
+      <div class="hint" style="font-size:14px">Tap a lift to start.<br>It opens on the week you're up to.</div></div>
+    <div class="kick">START A WORKOUT</div>
+    <div class="lifts">${rows}</div>
+    <div class="kick" style="margin-top:4px">MORE · COMING SOON</div>
+    <div class="more"><div class="tile">${svgLog}<span>Log</span></div><div class="tile">${svgProg}<span>Progress</span></div><div class="tile">${svgBars}<span>Rep Maxes</span></div></div>
+    <div class="foot"><span>Signed in as ${esc(name)}</span><button class="link" data-act="signout">Sign out</button></div>
+  </div>`;
+  if (!skipFetch && !S._lastLoading) {
+    S._lastLoading = true;
+    loadLast().then(() => { S._lastLoading = false; if (parseRoute().path === '/' && !S.menuOpen) renderHome(true); })
+      .catch(e => { S._lastLoading = false; console.error(e); });
+  }
+}
+
+/* ========= calculator ========= */
+function enterCalc(params) {
+  const st = settings();
+  let lift = params.get('lift'); if (!LIFTS.includes(lift)) lift = 'Bench';
+  let week = parseInt(params.get('week'), 10);
+  if (!S.scheme[week]) week = Logic.nextWeek(S.last[lift]);
+  const js = [0.05, 0.10, 0.15].includes(Number(st.default_js_percent)) ? Number(st.default_js_percent) : 0.05;
+  S.calc = { lift, week, js, orm: '', reps: {}, note: '', saving: false };
+  setOrmFromLast();
+  renderCalc();
+  // if the last-workout data hasn't arrived yet, fill the 1RM in when it does
+  if (!Object.keys(S.last).length) {
+    loadLast().then(() => {
+      if (S.calc && S.calc.orm === '' && parseRoute().path === '/calc') { setOrmFromLast(); const el = $('#orm'); if (el && !el.value) { el.value = S.calc.orm; syncAll(); } }
+    }).catch(console.error);
+  }
+}
+function setOrmFromLast() {
+  const l = S.last[S.calc.lift];
+  S.calc.orm = l && l.original_1rm != null ? Logic.fmt(l.original_1rm) : '';
+}
+function renderCalc() {
+  const c = S.calc, st = settings(), sch = S.scheme[c.week];
+  const on = jokersOn();
+  const weekOpts = Object.keys(S.scheme).map(Number).sort().map(w => `<option ${w === c.week ? 'selected' : ''}>${w}</option>`).join('');
+  const liftOpts = LIFTS.map(l => `<option ${l === c.lift ? 'selected' : ''}>${esc(l)}</option>`).join('');
+  const jsOpts = [0.05, 0.10, 0.15].map(p => `<option value="${p}" ${p === c.js ? 'selected' : ''}>${Math.round(p * 100)}%</option>`).join('');
+  const tg = Logic.targets(c.week, sch), deload = Logic.isDeload(sch);
+  const rowDefs = [1, 2, 3].map(i => {
+    const amrap = i === 3 && !deload;
+    const tcell = amrap ? `<span class="tgt"><b>${tg[2]}+</b><small>AMRAP</small></span>` : `<span>${tg[i - 1]}</span>`;
+    return `<div class="tr"><b>${i}</b><span id="p${i}"></span><b id="w${i}"></b>${tcell}
+      <input id="r${i}" data-key="w${i}" type="number" inputmode="numeric" min="0" max="99" aria-label="Set ${i} actual reps" value="${esc(c.reps['w' + i] || '')}"></div>`;
+  }).join('');
+  const jkOff = !on || deload;
+  app().innerHTML = `<div class="screen nums">
+    <div class="bar"><a class="homelink" href="#/">${svgHome} Home</a></div>
+    <div class="row3">
+      <div class="fld"><label for="lift">Lift</label><select id="lift">${liftOpts}</select></div>
+      <div class="fld"><label for="week">Week</label><select id="week">${weekOpts}</select></div>
+      <div class="fld ${jkOff ? 'off' : ''}"><label for="js">Joker Increase</label><select id="js" ${jkOff ? 'disabled' : ''}>${jsOpts}</select></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label for="orm">1 Rep Max</label><input id="orm" type="number" inputmode="decimal" min="0" value="${esc(c.orm)}"></div>
+      <div class="fld"><div class="lbl">Calc 1RM (${esc(st.one_rm_formula)})</div><div class="calcbox none" id="calc">—</div></div>
+    </div>
+    <div class="table">
+      <div class="tr head"><span>Set</span><span>%</span><span>Weight</span><span>Target</span><span>Actual</span></div>
+      ${rowDefs}
+      <div id="jokers"></div>
+    </div>
+    <div class="info" id="info"></div>
+    <div class="msg" id="msg"></div>
+    <div class="btns">
+      <button class="btn" data-act="note" id="notebtn">${svgPen('#1E1A19')}<span id="notelbl">Add note</span></button>
+      <button class="btn primary" data-act="save" id="savebtn">Save workout</button>
+    </div>
+  </div>`;
+  const info = $('#info');
+  if (!deload && on) info.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B625E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>Jokers unlock at ${sch.jk_sets}+ reps on Set 3.</span>`;
+  else info.style.display = 'none';
+  syncAll();
+}
+
+// recompute every number on screen without touching what the user is typing in
+function syncAll() {
+  const c = S.calc; if (!c) return;
+  const st = settings(), sch = S.scheme[c.week];
+  const orm = parseFloat(c.orm), rnd = Number(st.weight_rounding) || 5, tm = Number(st.training_max_pct) || 0.9;
+  const pcts = [sch.pct_set1, sch.pct_set2, sch.pct_set3];
+  const ws = orm > 0 ? Logic.workingWeights(orm, sch, tm, rnd) : [null, null, null];
+  c.weights = ws;
+  [1, 2, 3].forEach(i => {
+    $('#p' + i).textContent = Math.round(pcts[i - 1] * 100) + '%';
+    $('#w' + i).textContent = ws[i - 1] == null ? '–' : Logic.fmt(ws[i - 1]);
+  });
+  // jokers
+  const plan = Logic.jokerPlan(sch, ws[2], c.js, c.reps, rnd, jokersOn());
+  c.plan = plan;
+  const box = $('#jokers');
+  while (box.children.length > plan.length) {
+    const last = box.lastElementChild; delete c.reps['j' + last.dataset.n]; box.removeChild(last);
+  }
+  plan.forEach((j, idx) => {
+    let row = box.children[idx];
+    if (!row) {
+      row = document.createElement('div');
+      row.className = 'tr jk'; row.dataset.n = j.n;
+      row.innerHTML = `<b>J${j.n}</b><span>${Math.round(c.js * 100)}%</span><b class="jw"></b><span>${sch.reps}</span>
+        <input type="number" inputmode="numeric" min="0" max="99" data-key="j${j.n}" aria-label="Joker ${j.n} actual reps" value="${esc(c.reps['j' + j.n] || '')}">`;
+      box.appendChild(row);
+    }
+    row.children[1].textContent = Math.round(c.js * 100) + '%';
+    $('.jw', row).textContent = Logic.fmt(j.weight);
+    row.classList.toggle('next', idx === plan.length - 1 && !(c.reps['j' + j.n] || '').toString().length);
+  });
+  // calculated 1RM from Set 3
+  const calc = $('#calc');
+  const v = Logic.isDeload(sch) ? null : Logic.est1RM(st.one_rm_formula, ws[2], parseInt(c.reps.w3, 10));
+  calc.textContent = v == null ? '—' : v;
+  calc.classList.toggle('none', v == null);
+  c.calc1rm = v;
+  $('#notelbl').textContent = c.note ? 'Edit note' : 'Add note';
+}
+
+function setMsg(t, ok) { const m = $('#msg'); if (m) { m.textContent = t || ''; m.className = 'msg' + (ok ? ' ok' : ''); } }
+
+async function saveWorkout() {
+  const c = S.calc; if (!c || c.saving) return;
+  const st = settings(), sch = S.scheme[c.week], deload = Logic.isDeload(sch);
+  const orm = parseFloat(c.orm);
+  if (!(orm > 0)) return setMsg('Enter your 1 Rep Max first.');
+  const sets = [];
+  for (let i = 1; i <= 3; i++) {
+    const raw = (c.reps['w' + i] || '').toString().trim();
+    const r = parseInt(raw, 10);
+    if (raw === '' || !(r >= 0) || r > 99) return setMsg(`Enter the reps for Set ${i}.`);
+    sets.push({ set_type: 'Working', set_number: i, weight: c.weights[i - 1], reps: r });
+  }
+  c.plan.forEach(j => {
+    const raw = (c.reps['j' + j.n] || '').toString().trim();
+    if (raw === '') return; // jokers you didn't do aren't saved
+    const r = parseInt(raw, 10);
+    if (r >= 0 && r <= 99) sets.push({ set_type: 'Joker', set_number: j.n, weight: j.weight, reps: r });
+  });
+  c.saving = true; $('#savebtn').disabled = true; setMsg('Saving…', true);
+  const withJk = jokersOn() && !deload;
+  const { data, error } = await sb.rpc('save_workout', {
+    p_lift: c.lift, p_week: c.week, p_original_1rm: orm,
+    p_js_percent: withJk ? c.js : null,
+    p_calc_1rm: deload ? null : c.calc1rm,
+    p_calc_formula: deload || c.calc1rm == null ? null : st.one_rm_formula,
+    p_notes: c.note.trim() || null,
+    p_sets: sets
+  });
+  if (error) {
+    c.saving = false; $('#savebtn').disabled = false;
+    console.error(error);
+    return setMsg('Couldn’t save: ' + error.message);
+  }
+  S.last[c.lift] = { id: data, lift: c.lift, week: c.week, workout_date: new Date().toISOString(), original_1rm: orm, set3: { weight: sets[2].weight, reps: sets[2].reps } };
+  setMsg('Saved ✓', true);
+  S.calc = null;
+  setTimeout(() => { location.hash = '#/'; }, 700);
+}
+
+function openNote() {
+  const c = S.calc;
+  const d = document.createElement('div');
+  d.className = 'sheet'; d.id = 'notesheet';
+  d.innerHTML = `<div><div class="lbl" style="font-size:14px">Workout note</div>
+    <textarea id="notetext" placeholder="How did it feel? Anything to remember?">${esc(c.note)}</textarea>
+    <button class="btn primary" data-act="notedone">Done</button></div>`;
+  document.body.appendChild(d);
+  $('#notetext').focus();
+}
+
+/* ========= settings ========= */
+function renderSettings(msg, ok) {
+  const st = settings(), email = S.session.user.email || '';
+  const prog = ['5/3/1', JOKER_PROGRAM].map(p => `<option ${p === st.program ? 'selected' : ''}>${p}</option>`).join('');
+  const forms = FORMULAS.map(f => `<option ${f === st.one_rm_formula ? 'selected' : ''}>${f}</option>`).join('');
+  const rnds = [2.5, 5, 10].map(r => `<option value="${r}" ${Number(st.weight_rounding) === r ? 'selected' : ''}>${r} lb</option>`).join('');
+  const jsd = [0.05, 0.10, 0.15].map(p => `<option value="${p}" ${Number(st.default_js_percent) === p ? 'selected' : ''}>${Math.round(p * 100)}%</option>`).join('');
+  app().innerHTML = `<div class="screen">
+    <div class="bar"><a class="homelink" href="#/">${svgHome} Home</a></div>
+    <h1 class="s">My Settings</h1>
+    <div class="fld"><div class="lbl">Email</div><div class="locked">${esc(email)}</div></div>
+    <div class="fld"><label for="sname">Display name</label><input id="sname" type="text" value="${esc(st.display_name || '')}" maxlength="40"><div class="hint">Shown in the greeting on the home screen.</div></div>
+    <div class="fld"><label for="sprog">Program</label><select id="sprog">${prog}</select><div class="hint">Basic 5/3/1 turns off jokers and Joker Increase.</div></div>
+    <div class="fld"><label for="sform">1RM formula</label><select id="sform">${forms}</select><div class="hint">Used for the calculated 1RM after Set 3.</div></div>
+    <div class="two">
+      <div class="fld"><label for="stm">Training max (% of 1RM)</label><input id="stm" type="number" inputmode="numeric" min="50" max="100" value="${Math.round(Number(st.training_max_pct) * 100)}"></div>
+      <div class="fld"><label for="srnd">Round weights to</label><select id="srnd">${rnds}</select></div>
+    </div>
+    <div class="fld"><label for="sjs">Default Joker Increase</label><select id="sjs">${jsd}</select><div class="hint">What the calculator starts on. You can still change it for any workout.</div></div>
+    <div class="msg ${ok ? 'ok' : ''}" id="smsg">${esc(msg || '')}</div>
+    <button class="btn primary" data-act="savesettings" id="ssave">Save settings</button>
+    <button class="link center" data-act="signout">Sign out</button>
+  </div>`;
+}
+async function saveSettings() {
+  const tm = parseFloat($('#stm').value);
+  const msg = $('#smsg');
+  if (!(tm >= 50 && tm <= 100)) { msg.className = 'msg'; msg.textContent = 'Training max should be between 50 and 100.'; return; }
+  const row = {
+    user_id: S.session.user.id,
+    display_name: $('#sname').value.trim() || null,
+    program: $('#sprog').value,
+    one_rm_formula: $('#sform').value,
+    training_max_pct: tm / 100,
+    weight_rounding: parseFloat($('#srnd').value),
+    default_js_percent: parseFloat($('#sjs').value)
+  };
+  $('#ssave').disabled = true; msg.className = 'msg ok'; msg.textContent = 'Saving…';
+  const { error } = await sb.from('user_details').upsert(row, { onConflict: 'user_id' });
+  if (error) { console.error(error); $('#ssave').disabled = false; msg.className = 'msg'; msg.textContent = 'Couldn’t save: ' + error.message; return; }
+  S.settings = Object.assign({}, S.settings || {}, row);
+  renderSettings('Saved ✓', true);
+}
+
+/* ========= events ========= */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'menu') { S.menuOpen = !S.menuOpen; renderHome(true); }
+  else if (a === 'signout') doSignOut();
+  else if (a === 'retry') { S.loaded = false; route(); }
+  else if (a === 'note') openNote();
+  else if (a === 'notedone') { S.calc.note = $('#notetext').value; $('#notesheet').remove(); syncAll(); }
+  else if (a === 'save') saveWorkout();
+  else if (a === 'savesettings') saveSettings();
+});
+document.addEventListener('submit', e => { if (e.target.id === 'siform') { e.preventDefault(); doSignIn(); } });
+document.addEventListener('input', e => {
+  const t = e.target, c = S.calc;
+  if (!c || parseRoute().path !== '/calc') return;
+  if (t.id === 'orm') { c.orm = t.value; syncAll(); }
+  else if (t.dataset && t.dataset.key) { c.reps[t.dataset.key] = t.value; syncAll(); }
+  setMsg('');
+});
+document.addEventListener('change', e => {
+  const t = e.target, c = S.calc;
+  if (!c || parseRoute().path !== '/calc') return;
+  if (t.id === 'lift') { c.lift = t.value; c.week = Logic.nextWeek(S.last[c.lift]); c.reps = {}; setOrmFromLast(); renderCalc(); }
+  else if (t.id === 'week') { c.week = parseInt(t.value, 10); c.reps = {}; renderCalc(); }
+  else if (t.id === 'js') { c.js = parseFloat(t.value); syncAll(); }
+});
+
+/* ========= start ========= */
+(async function boot() {
+  try {
+    const { data } = await sb.auth.getSession();
+    S.session = data.session;
+  } catch (e) { console.error(e); }
+  sb.auth.onAuthStateChange((ev, s) => {
+    if (ev === 'SIGNED_OUT' && S.session) { S.session = null; setTimeout(route, 0); }
+  });
+  route();
+})();
+window.__app = { S, Logic };
+</script>
+</body>
+</html>
